@@ -1,4 +1,5 @@
 import { Dayjs } from 'dayjs';
+import React from 'react';
 export type DefaultRecordType = Record<string, any>;
 export namespace Gantt {
   export interface Major {

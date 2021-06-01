@@ -168,6 +168,13 @@ class GanttStore {
   }
 
   @action
+  toggleCollapseAll(collapsed: boolean) {
+    this.data.forEach(item => {
+      item.collapsed = collapsed;
+    });
+  }
+
+  @action
   setOnUpdate(onUpdate: GanttProps['onUpdate']) {
     this.onUpdate = onUpdate;
   }

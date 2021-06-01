@@ -4,6 +4,7 @@ import React, {
   useEffect,
   useContext,
   useImperativeHandle,
+  forwardRef,
 } from 'react';
 import { useSize } from 'ahooks';
 import Context, { GanttContext } from './context';
@@ -40,7 +41,7 @@ const Body: React.FC = ({ children }) => {
 };
 export interface GanttProps<RecordType = DefaultRecordType> {
   data: Gantt.Record<RecordType>[];
-  columns: Gantt.Column[];
+  columns: Gantt.Column<RecordType>[];
   dependencies?: Gantt.Dependence[];
   onUpdate: (
     record: Gantt.Record<RecordType>,
@@ -52,7 +53,6 @@ export interface GanttProps<RecordType = DefaultRecordType> {
   isRestDay?: (date: string) => boolean;
   unit?: Gantt.Sight;
   rowHeight?: number;
-  innerRef?: React.MutableRefObject<GanttRef>;
   getBarColor?: GanttContext<RecordType>['getBarColor'];
   showBackToday?: GanttContext<RecordType>['showBackToday'];
   showUnitSwitch?: GanttContext<RecordType>['showUnitSwitch'];
@@ -69,9 +69,12 @@ export interface GanttProps<RecordType = DefaultRecordType> {
 export interface GanttRef {
   backToday: () => void;
   getWidthByDate: (startDate: Dayjs, endDate: Dayjs) => number;
+  expandAll: () => void;
+  collapseAll: () => void;
 }
 const GanttComponent = <RecordType extends DefaultRecordType>(
-  props: GanttProps<RecordType>
+  props: GanttProps<RecordType>,
+  ref
 ) => {
   const {
     data,
@@ -95,7 +98,6 @@ const GanttComponent = <RecordType extends DefaultRecordType>(
     renderBarThumb,
     scrollTop = true,
     rowHeight = ROW_HEIGHT,
-    innerRef,
   } = props;
   const store = useMemo(() => new GanttStore({ rowHeight }), [rowHeight]);
   useEffect(() => {
@@ -121,9 +123,11 @@ const GanttComponent = <RecordType extends DefaultRecordType>(
       store.switchSight(unit);
     }
   }, [unit, store]);
-  useImperativeHandle(innerRef, () => ({
+  useImperativeHandle(ref, () => ({
     backToday: () => store.scrollToToday(),
     getWidthByDate: store.getWidthByDate,
+    expandAll: () => store.toggleCollapseAll(false),
+    collapseAll: () => store.toggleCollapseAll(true),
   }));
 
   const ContextValue = React.useMemo(
@@ -182,4 +186,4 @@ const GanttComponent = <RecordType extends DefaultRecordType>(
     </Context.Provider>
   );
 };
-export default GanttComponent;
+export default forwardRef(GanttComponent);
