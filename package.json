@@ -1,5 +1,5 @@
 {
-  "version": "0.1.2",
+  "version": "0.1.3-alpha",
   "license": "MIT",
   "main": "dist/index.js",
   "typings": "dist/index.d.ts",
@@ -36,7 +36,7 @@
     "singleQuote": true,
     "trailingComma": "es5"
   },
-  "name": "react-gantt-component",
+  "name": "@bluishoul/react-gantt-component",
   "author": "laincarl",
   "module": "dist/react-gantt-component.esm.js",
   "size-limit": [
